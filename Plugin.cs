@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -735,6 +735,37 @@ namespace StationeersTest
 
                     writer.WriteEndObject();
                 }
+            }
+
+            {
+                msgs.Add("Writing Colors...");
+                string path = Path.Combine(out_path, "Colors.json");
+                StreamWriter sw = new(path);
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    writer.WriteStartObject();
+                    int colors = GameManager.ColorCount;
+                    for (int i = 0; i < colors; i++)
+                    {
+                        var c = GameManager.GetColorSwatch(i);
+                        writer.WritePropertyName(c.Name);
+                        writer.WriteStartObject();
+
+                        writer.WritePropertyName("RGB");
+                        writer.WriteStartArray();
+                        writer.WriteValue(c.Color.r);
+                        writer.WriteValue(c.Color.g);
+                        writer.WriteValue(c.Color.b);
+                        writer.WriteEnd();
+                        // html/hex
+                        writer.WritePropertyName("Hex");
+                        writer.WriteValue(ColorUtility.ToHtmlStringRGB(c.Color));
+
+                        writer.WriteEnd();
+                    }
+                    writer.WriteEndObject();
+                }
+
             }
 
             {
